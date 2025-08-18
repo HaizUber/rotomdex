@@ -14,6 +14,7 @@ function App() {
         <Route path="/pokemons" element={<PokemonList />} />
       </Routes>
     </div>
+  //anon
   );
 }
 
