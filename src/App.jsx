@@ -12,6 +12,12 @@ export default function App() {
   };
 
   return (
+  <>
+    <audio id="backgroundMusic" loop autoPlay muted>
+      <source src="assets/Music/BGM.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+
     <div className="min-h-screen flex flex-col items-center justify-center bg-slate-100">
       <h1 className="text-4xl font-bold text-blue-600 mb-4">Welcome to RotomDex</h1>
       <button
@@ -27,6 +33,6 @@ export default function App() {
         </div>
       )}
     </div>
-  //anon
+  </> 
   );
 }
