@@ -1,5 +1,6 @@
 import { Routes, Route, Link } from "react-router-dom";
 import PokemonList from "./pages/PokemonList";
+import PokemonDetails from "./pages/PokemonDetails";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <Routes>
         <Route path="/" element={<h1>Welcome to my App</h1>} />
         <Route path="/pokemons" element={<PokemonList />} />
+         <Route path="/pokemon/:name" element={<PokemonDetails />}/>
       </Routes>
     </div>
   //anon
