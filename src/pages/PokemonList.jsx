@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { typeColors } from "./pokemonTypeColors";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 export default function PokemonList() {
   const [pokemonIndex, setPokemonIndex] = useState([]); 
@@ -66,20 +67,37 @@ export default function PokemonList() {
   const visiblePokemons = filteredPokemons.slice(0, visibleCount);
 
   return (
-    <div className="min-h-screen w-screen bg-slate-100 flex flex-col items-center p-4">
-      <h1 className="text-3xl font-bold text-blue-600 mb-6">Pokémon List</h1>
-
-      {/* Search */}
-      <input
-        type="text"
-        placeholder="Search Pokémon..."
-        className="mb-6 p-2 border rounded-lg w-80"
-        value={search}
-        onChange={(e) => {
-          setSearch(e.target.value);
-          setVisibleCount(20); 
+        <div
+        className="min-h-screen w-screen flex flex-col items-center p-4"
+        style={{
+          backgroundImage: "url('https://wallpapers.com/images/featured-full/pokemon-landscape-yf5odhgkds0n53yl.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          backgroundAttachment: "fixed",
         }}
-      />
+        >
+        <div className="w-full flex flex-col items-center mb-8">
+          <h1
+            className="text-4xl font-extrabold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-red-400 to-blue-600 drop-shadow-lg"
+            style={{
+              textShadow: "2px 2px 8px rgba(0,0,0,0.25)",
+              letterSpacing: "2px",
+            }}
+          >
+            Pokémon List
+          </h1>
+        <input
+          type="text"
+          placeholder="Search Pokémon..."
+          className="mb-6 p-3 border-2 border-blue-400 rounded-xl w-80 bg-white/80 backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-yellow-400 text-lg transition-all duration-200 shadow-md text-black"
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setVisibleCount(20);
+          }}
+        />
+          </div>
 
       {/* Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 w-full max-w-6xl bg-white p-4 rounded-2xl shadow-md min-h-[600px] items-start justify-center">
@@ -92,24 +110,38 @@ export default function PokemonList() {
 
           if (!details) {
             return (
-              <div
+              <motion.div
                 key={pokemon.name}
-                className="flex-shrink-0 m-4 relative overflow-hidden rounded-lg max-w-xs shadow-lg bg-gray-200 animate-pulse h-48"
+                className="flex-shrink-0 m-4 relative overflow-hidden rounded-lg max-w-xs shadow-lg bg-gray-200 h-48"
+                initial={{ opacity: 0.5, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, repeat: Infinity, repeatType: "reverse" }}
               >
-                <p className="text-center mt-16">Loading {pokemon.name}...</p>
-              </div>
+                <motion.p
+                  className="text-center mt-16"
+                  animate={{ opacity: [0.5, 1, 0.5] }}
+                  transition={{ duration: 1.2, repeat: Infinity }}
+                >
+                  Loading {pokemon.name}...
+                </motion.p>
+              </motion.div>
             );
           }
 
           const mainType = details.types[0].type.name;
           const bgColor = typeColors[mainType] || "#6366f1";
-
+          
           return (
-            <button
+            <motion.button
               key={details.id}
-              onClick={() => navigate(`/pokemon/${details.name}`)} 
-              className="flex-shrink-0 m-4 relative overflow-hidden rounded-lg max-w-xs shadow-lg text-left transition transform hover:scale-105 focus:outline-none"
+              onClick={() => navigate(`/pokemon/${details.name}`)}
+              className="flex-shrink-0 m-4 relative overflow-hidden rounded-lg max-w-xs shadow-lg text-left focus:outline-none"
               style={{ backgroundColor: bgColor }}
+              whileHover={{ scale: 1.07, boxShadow: "0px 8px 24px rgba(0,0,0,0.18)" }}
+              whileTap={{ scale: 0.97 }}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ type: "spring", stiffness: 120, damping: 12 }}
             >
               <svg
                 className="absolute bottom-0 left-0 mb-8"
@@ -170,7 +202,7 @@ export default function PokemonList() {
                   </span>
                 </div>
               </div>
-            </button>
+            </motion.button>
           );
         })}
       </div>
