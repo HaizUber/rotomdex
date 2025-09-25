@@ -9,6 +9,7 @@ export default function PokemonDetails() {
   const [pokemon, setPokemon] = useState(null);
   const [species, setSpecies] = useState(null);
   const [evolutions, setEvolutions] = useState([]);
+  
 
   useEffect(() => {
     const fetchPokemon = async () => {
