@@ -225,12 +225,8 @@ export default function PokemonList() {
         </div>
       </div>
 
-      {/* Cards */}
-<<<<<<< HEAD
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 w-full max-w-6xl bg-white/5 backdrop-blur-xs p-4 rounded-2xl shadow-md min-h-[600px] items-start justify-center">
-=======
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 w-full max-w-6xl bg-white/5 backdrop-blur-sm p-4 rounded-2xl shadow-md min-h-[600px] items-start justify-center">
->>>>>>> d24f3b464ef5910154b99cb08b9efcaacc4e109b
+{/* Cards */}
+<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 w-full max-w-6xl bg-white/5 backdrop-blur-sm p-4 rounded-2xl shadow-md min-h-[600px] items-start justify-center">
         {visiblePokemons.map((pokemon) => {
           const details = pokemonDetails[pokemon.name];
 
