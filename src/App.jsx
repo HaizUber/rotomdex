@@ -7,9 +7,9 @@ function App() {
   return (
     <>
       <div>
-        <nav style={{ padding: "1rem", borderBottom: "1px solid #ccc" }}>
+        <nav style={{ padding: "1rem", borderBottom: "1px solid #ccc", marginRight: "1rem" }}>
           <Link to="/" style={{ marginRight: "1rem" }}>Home</Link>
-          <Link to="/pokemons">Pokémon List</Link>
+          <Link to="/pokemons" style={{ marginRight: "1rem" }}>Pokémon List</Link>
           <Link to="/items">Items</Link>
         </nav>
 

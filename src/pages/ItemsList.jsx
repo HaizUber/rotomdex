@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import bg from "../assets/BgImages/BgImage1.jpg";
+import ItemDetails from "./ItemDetails";
 
 export default function ItemsList() {
   // index of all items (names + urls)
@@ -32,6 +33,21 @@ export default function ItemsList() {
 
     return () => controller.abort();
   }, []);
+
+  //selected item for details view
+  const [selectedItem, setSelectedItem] = useState(null);
+  const handleCloseDetails = () => setSelectedItem(null);
+
+  //Fetch details
+  const fetchItemDetails = async (name, url) => {
+    let details = itemDetails[name];
+    if (!details) {
+      details = await fetchDetails(name, url);
+    }
+    if (details) {
+      setSelectedItem(details);
+    }
+  };
 
   // infinite scroll listener
   useEffect(() => {
@@ -92,7 +108,7 @@ export default function ItemsList() {
         </h1>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 w-full max-w-6xl bg-white p-4 rounded-2xl shadow-md min-h-[600px] items-start justify-center">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 w-full max-w-6xl bg-white/5 backdrop-blur-sm p-4 rounded-2xl shadow-md min-h-[600px] items-start justify-center">
         {visibleItems.map((item) => {
           const details = itemDetails[item.name];
 
@@ -101,8 +117,12 @@ export default function ItemsList() {
             fetchDetails(item.name, item.url);
             return (
               <motion.div
-                key={item.name}
-                className="flex-shrink-0 m-4 relative overflow-hidden rounded-lg max-w-xs shadow-lg bg-gray-200 h-48"
+                key ={item.name}
+                onClick={() => fetchItemDetails(item.name, item.url)}
+                whileHover={{ scale: 1.03, boxShadow: "0px 6px 20px rgba(0,0,0,0.15)" }}
+                whileTap={{ scale: 0.97 }}
+                className="flex-shrink-0 m-4 relative overflow-hidden rounded-lg max-w-xs shadow-lg bg-gray-200 h-48 cursor-pointer"
+                
               >
                 <motion.p
                   className="text-center mt-16"
@@ -118,8 +138,10 @@ export default function ItemsList() {
           const category = details.category?.name;
 
           return (
-            <motion.div
+
+            <motion.button
               key={details.name}
+              onClick={() => fetchItemDetails(details.name, item.url)}
               className="flex-shrink-0 m-4 relative overflow-hidden rounded-lg max-w-xs shadow-lg text-left bg-gradient-to-br from-slate-50 to-blue-50 border border-blue-100"
               whileHover={{ scale: 1.07, boxShadow: "0px 8px 24px rgba(0,0,0,0.18)" }}
               whileTap={{ scale: 0.97 }}
@@ -178,7 +200,7 @@ export default function ItemsList() {
                   </span>
                 </div>
               </div>
-            </motion.div>
+            </motion.button>
           );
         })}
       </div>
@@ -192,6 +214,9 @@ export default function ItemsList() {
         <p className="mt-4 text-red-600 font-semibold bg-white/80 px-3 py-1 rounded">
           Error: {error}
         </p>
+      )}
+      {selectedItem && (
+        <ItemDetails item={selectedItem} onClose={handleCloseDetails} />
       )}
     </div>
   );
