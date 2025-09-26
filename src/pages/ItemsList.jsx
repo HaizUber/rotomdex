@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import bg from "../assets/BgImages/BgImage1.jpg";
 
 export default function ItemsList() {
   // index of all items (names + urls)
@@ -75,7 +76,7 @@ export default function ItemsList() {
       className="min-h-screen w-screen flex flex-col items-center p-4"
       style={{
         backgroundImage:
-          "url('https://wallpapers.com/images/featured-full/pokemon-landscape-yf5odhgkds0n53yl.jpg')",
+          `url(${bg})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
