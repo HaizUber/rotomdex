@@ -5,24 +5,107 @@ import { motion } from "framer-motion";
 
 export default function PokemonList() {
   const [pokemonIndex, setPokemonIndex] = useState([]); 
-  const [pokemonDetails, setPokemonDetails] = useState({}); 
-  const [visibleCount, setVisibleCount] = useState(20); 
+  const [filteredIndex, setFilteredIndex] = useState([]);
+  const [pokemonDetails, setPokemonDetails] = useState({});
+  const [visibleCount, setVisibleCount] = useState(20);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
-  const navigate = useNavigate(); 
+  const [selectedType, setSelectedType] = useState("");
+  const [selectedGeneration, setSelectedGeneration] = useState("");
+  const generationApiIds = {
+    "Generation I": 1,
+    "Generation II": 2,
+    "Generation III": 3,
+    "Generation IV": 4,
+    "Generation V": 5,
+    "Generation VI": 6,
+    "Generation VII": 7,
+    "Generation VIII": 8,
+    "Generation IX": 9,
+  };
+  const navigate = useNavigate();
+
+  const generations = {
+    "Generation I": { start: 1, end: 151 },
+    "Generation II": { start: 152, end: 251 },
+    "Generation III": { start: 252, end: 386 },
+    "Generation IV": { start: 387, end: 493 },
+    "Generation V": { start: 494, end: 649 },
+    "Generation VI": { start: 650, end: 721 },
+    "Generation VII": { start: 722, end: 809 },
+    "Generation VIII": { start: 810, end: 905 },
+    "Generation IX": { start: 906, end: 1010 },
+  };
+  
+    const getGeneration = (id) => {
+      for (const [genName, range] of Object.entries(generations)) {
+        if (id >= range.start && id <= range.end) {
+          return genName;
+        }
+      }
+      return "Unknown Generation";
+    };
 
   useEffect(() => {
     const fetchIndex = async () => {
       try {
         const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0");
         const data = await res.json();
-        setPokemonIndex(data.results); 
+        setPokemonIndex(data.results);
       } catch (err) {
         console.error("Error fetching Pokémon index:", err);
       }
     };
     fetchIndex();
   }, []);
+
+  useEffect(() => {
+    const fetchFilteredIndex = async () => {
+      let filtered = pokemonIndex;
+      // Generation filter
+      if (selectedGeneration) {
+        try {
+          const genId = generationApiIds[selectedGeneration];
+          const res = await fetch(`https://pokeapi.co/api/v2/generation/${genId}`);
+          const data = await res.json();
+          filtered = data.pokemon_species.map((p) => ({
+            name: p.name,
+            url: `https://pokeapi.co/api/v2/pokemon/${p.name}`,
+          }));
+        } catch (err) {
+          console.error("Error fetching generation:", err);
+        }
+      }
+      // Type filter
+      if (selectedType) {
+        try {
+          const res = await fetch(`https://pokeapi.co/api/v2/type/${selectedType}`);
+          const data = await res.json();
+          const typeFiltered = data.pokemon.map((p) => ({
+            name: p.pokemon.name,
+            url: p.pokemon.url,
+          }));
+          if (selectedGeneration) {
+            const typeSet = new Set(typeFiltered.map((p) => p.name));
+            filtered = filtered.filter((p) => typeSet.has(p.name));
+          } else {
+            filtered = typeFiltered;
+          }
+        } catch (err) {
+          console.error("Error fetching type:", err);
+        }
+      }
+      // Search filter
+      if (search) {
+        filtered = filtered.filter((p) => p.name.toLowerCase().includes(search.toLowerCase()));
+      }
+      setFilteredIndex(filtered);
+      setVisibleCount(20);
+    };
+    if (pokemonIndex.length > 0) {
+      fetchFilteredIndex();
+    }
+  }, [pokemonIndex, selectedType, selectedGeneration, search]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,17 +116,15 @@ export default function PokemonList() {
         loadMore();
       }
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [loading, visibleCount, pokemonIndex]);
+  }, [loading, visibleCount, filteredIndex]);
 
   const loadMore = () => {
     if (loading) return;
     setLoading(true);
-
     setTimeout(() => {
-      setVisibleCount((prev) => prev + 20);
+      setVisibleCount((prev) => Math.min(prev + 20, filteredIndex.length));
       setLoading(false);
     }, 300);
   };
@@ -60,47 +141,92 @@ export default function PokemonList() {
     }
   };
 
-  const filteredPokemons = pokemonIndex.filter((p) =>
-    p.name.toLowerCase().includes(search.toLowerCase())
-  );
-
-  const visiblePokemons = filteredPokemons.slice(0, visibleCount);
+  const visiblePokemons = filteredIndex.slice(0, visibleCount);
 
   return (
-        <div
-        className="min-h-screen w-screen flex flex-col items-center p-4"
-        style={{
-          backgroundImage: "url('https://wallpapers.com/images/featured-full/pokemon-landscape-yf5odhgkds0n53yl.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          backgroundAttachment: "fixed",
-        }}
-        >
-        <div className="w-full flex flex-col items-center mb-8">
+    <div
+      className="min-h-screen w-screen flex flex-col items-center p-4"
+      style={{
+        backgroundImage: "url('/src/assets/BgImages/pokelistbg.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundAttachment: "fixed",
+      }}
+    >
+      <div className="w-full flex flex-col items-center mb-8">
+        <div className="bg-white/5 backdrop-blur-xs p-6 rounded-2xl shadow-md w-full max-w-6xl mb-6">
+          {/* Title */}
           <h1
-            className="text-4xl font-extrabold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-red-400 to-blue-600 drop-shadow-lg"
+            className="text-5xl font-bold mb-6 text-white text-center"
             style={{
-              textShadow: "2px 2px 8px rgba(0,0,0,0.25)",
-              letterSpacing: "2px",
+              textShadow: "0px 4px 12px rgba(255, 255, 255, 0.6)",
+              letterSpacing: "1px",
             }}
           >
-            Pokémon List
+            Pokémon Explorer
           </h1>
-        <input
-          type="text"
-          placeholder="Search Pokémon..."
-          className="mb-6 p-3 border-2 border-blue-400 rounded-xl w-80 bg-white/80 backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-yellow-400 text-lg transition-all duration-200 shadow-md text-black"
-          value={search}
-          onChange={(e) => {
-            setSearch(e.target.value);
-            setVisibleCount(20);
-          }}
-        />
+
+          {/* Search Bar and Filters */}
+          <div className="flex flex-wrap gap-4 justify-center items-center">
+            {/* Search Bar */}
+            <input
+              type="text"
+              placeholder="Search Pokémon..."
+              className="p-3 border-2 border-white-400 rounded-xl w-full max-w-md bg-white/10 backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-lg transition-all duration-200 shadow-md text-white placeholder-gray-300"
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setVisibleCount(20);
+              }}
+            />
+
+            {/* Type Filter */}
+            <select
+              className="p-3 border-2 border-white-400 rounded-xl bg-white/10 backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-lg shadow-md text-white placeholder-gray-300"
+              value={selectedType}
+              onChange={(e) => setSelectedType(e.target.value)}
+            >
+              <option value="">Filter by Type</option>
+              {Object.keys(typeColors).map((type) => (
+                <option key={type} value={type}>
+                  {type.charAt(0).toUpperCase() + type.slice(1)}
+                </option>
+              ))}
+            </select>
+
+            {/* Generation Filter */}
+            <select
+              className="p-3 border-2 border-white-400 rounded-xl bg-white/10 backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-lg shadow-md text-white placeholder-gray-300"
+              value={selectedGeneration}
+              onChange={(e) => setSelectedGeneration(e.target.value)}
+            >
+              <option value="">Filter by Generation</option>
+              {Object.keys(generations).map((gen) => (
+                <option key={gen} value={gen}>
+                  {gen}
+                </option>
+              ))}
+            </select>
+              {/* Clear All Filters Button */}
+              <button
+                className="p-3 rounded-xl bg-red-500 hover:bg-red-600 text-white font-semibold shadow-md transition-all duration-200"
+                onClick={() => {
+                  setSearch("");
+                  setSelectedType("");
+                  setSelectedGeneration("");
+                  setVisibleCount(20);
+                }}
+                type="button"
+              >
+                Clear All Filters
+              </button>
           </div>
+        </div>
+      </div>
 
       {/* Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 w-full max-w-6xl bg-white p-4 rounded-2xl shadow-md min-h-[600px] items-start justify-center">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 w-full max-w-6xl bg-white/5 backdrop-blur-xs p-4 rounded-2xl shadow-md min-h-[600px] items-start justify-center">
         {visiblePokemons.map((pokemon) => {
           const details = pokemonDetails[pokemon.name];
 
@@ -131,6 +257,8 @@ export default function PokemonList() {
           const mainType = details.types[0].type.name;
           const bgColor = typeColors[mainType] || "#6366f1";
           
+            const generationName = getGeneration(details.id);
+
           return (
             <motion.button
               key={details.id}
@@ -187,9 +315,9 @@ export default function PokemonList() {
 
               {/* Info */}
               <div className="relative text-white px-6 pb-6 mt-6">
-                <span className="block opacity-75 -mb-1">
-                  {details.types.map((t) => t.type.name).join(", ")}
-                </span>
+                  <span className="block text-xs opacity-80 mb-1">
+                    {generationName}
+                  </span>
                 <div className="flex justify-between items-center">
                   <span className="block font-semibold text-xl capitalize">
                     {details.name}
