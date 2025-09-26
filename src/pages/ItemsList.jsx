@@ -102,14 +102,9 @@ export default function ItemsList() {
               <motion.div
                 key={item.name}
                 className="flex-shrink-0 m-4 relative overflow-hidden rounded-lg max-w-xs shadow-lg bg-gray-200 h-48"
-                initial={{ opacity: 0.5, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8, repeat: Infinity, repeatType: "reverse" }}
               >
                 <motion.p
                   className="text-center mt-16"
-                  animate={{ opacity: [0.5, 1, 0.5] }}
-                  transition={{ duration: 1.2, repeat: Infinity }}
                 >
                   Loading {item.name}...
                 </motion.p>
@@ -127,9 +122,6 @@ export default function ItemsList() {
               className="flex-shrink-0 m-4 relative overflow-hidden rounded-lg max-w-xs shadow-lg text-left bg-gradient-to-br from-slate-50 to-blue-50 border border-blue-100"
               whileHover={{ scale: 1.07, boxShadow: "0px 8px 24px rgba(0,0,0,0.18)" }}
               whileTap={{ scale: 0.97 }}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ type: "spring", stiffness: 120, damping: 12 }}
             >
               <svg
                 className="absolute bottom-0 left-0 mb-8"
