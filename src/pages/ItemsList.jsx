@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import bg from "../assets/BgImages/BgImage1.jpg";
+import bg from "../assets/BgImages/itemlistbg2.jpg";
 import ItemDetails from "./ItemDetails";
 
 export default function ItemsList() {
@@ -12,6 +12,13 @@ export default function ItemsList() {
   const [visibleCount, setVisibleCount] = useState(24);
   const [loading, setLoading] = useState(false); // used for initial + load more
   const [error, setError] = useState("");
+
+  //search
+  const [searchTerm, setSearchTerm] = useState("");
+  // reset visible count when searching
+  useEffect(() => {
+    setVisibleCount(24);
+  }, [searchTerm]);
 
   // fetch the full items index once
   useEffect(() => {
@@ -85,7 +92,12 @@ export default function ItemsList() {
     }
   };
 
-  const visibleItems = itemIndex.slice(0, visibleCount);
+  // apply search filter (case-insensitive)
+  const filteredIndex = (searchTerm || "").trim()
+    ? itemIndex.filter((it) => it.name.toLowerCase().includes(searchTerm.toLowerCase()))
+    : itemIndex;
+
+  const visibleItems = filteredIndex.slice(0, visibleCount);
 
   return (
     <div
@@ -106,6 +118,15 @@ export default function ItemsList() {
         >
           Items
         </h1>
+        <div className="w-full max-w-6xl mb-6">
+          <input
+            type="search"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search items..."
+            className="p-3 border-2 border-white-400 rounded-xl w-full max-w-md bg-white/5 backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-lg transition-all duration-200 shadow-md text-white placeholder-gray-600"
+          />
+        </div>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 w-full max-w-6xl bg-white/5 backdrop-blur-sm p-4 rounded-2xl shadow-md min-h-[600px] items-start justify-center">
@@ -113,7 +134,6 @@ export default function ItemsList() {
           const details = itemDetails[item.name];
 
           if (!details) {
-            // kick off detail fetch lazily
             fetchDetails(item.name, item.url);
             return (
               <motion.div
@@ -121,7 +141,10 @@ export default function ItemsList() {
                 onClick={() => fetchItemDetails(item.name, item.url)}
                 whileHover={{ scale: 1.03, boxShadow: "0px 6px 20px rgba(0,0,0,0.15)" }}
                 whileTap={{ scale: 0.97 }}
-                className="flex-shrink-0 m-4 relative overflow-hidden rounded-lg max-w-xs shadow-lg bg-gray-200 h-48 cursor-pointer"
+                className="flex-shrink-0 m-4 relative overflow-hidden rounded-lg max-w-xs shadow-lg bg-gray-200 h-48"
+                initial={{ opacity: 0.5, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, repeat: Infinity, repeatType: "reverse" }}
                 
               >
                 <motion.p
@@ -145,6 +168,9 @@ export default function ItemsList() {
               className="flex-shrink-0 m-4 relative overflow-hidden rounded-lg max-w-xs shadow-lg text-left bg-gradient-to-br from-slate-50 to-blue-50 border border-blue-100"
               whileHover={{ scale: 1.07, boxShadow: "0px 8px 24px rgba(0,0,0,0.18)" }}
               whileTap={{ scale: 0.97 }}
+              initial={{ opacity: 0, y: 80 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ type: "spring", stiffness: 120, damping: 12 }}
             >
               <svg
                 className="absolute bottom-0 left-0 mb-8"
