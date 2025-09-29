@@ -1,7 +1,55 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { typeColors } from "./pokemonTypeColors";
-import { motion } from "framer-motion";
+import { motion, useAnimation } from "framer-motion";
+
+function BentoCard({ children, className, ...props }) {
+  const ref = useRef(null);
+  const controls = useAnimation();
+
+  const handleMouseMove = (e) => {
+    const card = ref.current;
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    controls.start({
+      x: x * 0.07,
+      y: y * 0.07,
+      rotateX: -y * 0.03,
+      rotateY: x * 0.03,
+      transition: { type: "spring", stiffness: 300, damping: 20 }
+    });
+  };
+
+  const handleMouseLeave = () => {
+    controls.start({
+      x: 0,
+      y: 0,
+      rotateX: 0,
+      rotateY: 0,
+      transition: { type: "spring", stiffness: 200, damping: 30 }
+    });
+  };
+
+  return (
+    <motion.div
+      ref={ref}
+      className={className}
+      animate={controls}
+      whileHover={{
+        scale: 1.04,
+        boxShadow: "0 8px 32px #6366f133",
+        transition: { type: "spring", stiffness: 300, damping: 20 }
+      }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      {...props}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
 export default function PokemonDetails() {
   const { name } = useParams();
@@ -9,7 +57,6 @@ export default function PokemonDetails() {
   const [pokemon, setPokemon] = useState(null);
   const [species, setSpecies] = useState(null);
   const [evolutions, setEvolutions] = useState([]);
-  
 
   useEffect(() => {
     const fetchPokemon = async () => {
@@ -101,6 +148,9 @@ export default function PokemonDetails() {
   const mainType = pokemon.types[0].type.name;
   const mainTypeColor = typeColors[mainType] || "#6366f1";
 
+  // Bento card style
+  const bentoCardClass = "bento-card bg-white/90 shadow-lg rounded-2xl p-6 border border-blue-100 flex flex-col justify-center items-center";
+
   return (
     <motion.div
       className="min-h-screen w-screen bg-gradient-to-br from-blue-100 to-slate-200 flex flex-col items-center p-6"
@@ -117,22 +167,18 @@ export default function PokemonDetails() {
         ← Back
       </motion.button>
 
-      <motion.div
-        className="bg-white/90 shadow-2xl rounded-2xl p-8 max-w-lg w-full text-center border border-blue-200"
-        initial={{ y: 40, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6 }}
-      >
-        <motion.div
-          className="flex flex-col items-center mb-6"
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+      {/* Bento grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl w-full">
+        <BentoCard
+          className={bentoCardClass + " col-span-1"}
+          initial={{ y: 40, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6 }}
         >
           <motion.img
             src={artwork}
             alt={pokemon.name}
-            className="mx-auto w-52 h-52 mb-2 rounded-2xl bg-gradient-to-br from-slate-100 to-blue-100 shadow-lg border-4 border-blue-200 cursor-pointer"
+            className="mx-auto w-40 h-40 mb-2 rounded-2xl bg-gradient-to-br from-slate-100 to-blue-100 shadow-lg border-4 border-blue-200 cursor-pointer"
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.3 }}
@@ -146,7 +192,7 @@ export default function PokemonDetails() {
             title="Play Pokémon Cry"
           />
           <motion.h1
-            className="text-4xl font-extrabold capitalize mb-2 tracking-wide"
+            className="text-3xl font-extrabold capitalize mb-2 tracking-wide"
             style={{
               color: mainTypeColor,
               textShadow: "1px 2px 8px #6366f133",
@@ -165,71 +211,79 @@ export default function PokemonDetails() {
           >
             #{pokemon.id.toString().padStart(3, "0")}
           </motion.span>
-        </motion.div>
+        </BentoCard>
 
-        {flavor && (
-          <motion.p
-            className="italic text-gray-700 mb-6 px-2"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.6 }}
-          >
-            {flavor}
-          </motion.p>
-        )}
+        {/* Description */}
+        <BentoCard
+          className={bentoCardClass + " col-span-1"}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
+        >
+          <h2 className="text-lg font-semibold mb-2 text-blue-800">Description</h2>
+          <p className="italic text-gray-700">{flavor}</p>
+        </BentoCard>
 
-        <motion.div
-          className="flex flex-wrap justify-center gap-2 mb-4"
+        {/* Types */}
+        <BentoCard
+          className={bentoCardClass + " col-span-1"}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.7 }}
         >
-          {pokemon.types.map((t) => (
-            <motion.span
-              key={t.type.name}
-              className="inline-block rounded-full px-3 py-1 font-bold shadow text-xs"
-              style={{
-                backgroundColor: typeColors[t.type.name] || "#6366f1",
-                color: "#fff",
-                border: "2px solid #fff",
-                textShadow: "0 1px 4px #0002",
-              }}
-              whileHover={{ scale: 1.1 }}
-            >
-              {t.type.name}
-            </motion.span>
-          ))}
-        </motion.div>
+          <h2 className="text-lg font-semibold mb-2 text-indigo-800">Types</h2>
+          <div className="flex flex-wrap justify-center gap-2">
+            {pokemon.types.map((t) => (
+              <motion.span
+                key={t.type.name}
+                className="inline-block rounded-full px-3 py-1 font-bold shadow text-xs"
+                style={{
+                  backgroundColor: typeColors[t.type.name] || "#6366f1",
+                  color: "#fff",
+                  border: "2px solid #fff",
+                  textShadow: "0 1px 4px #0002",
+                }}
+                whileHover={{ scale: 1.1 }}
+              >
+                {t.type.name}
+              </motion.span>
+            ))}
+          </div>
+        </BentoCard>
 
-        <motion.div
-          className="grid grid-cols-2 gap-4 mb-6"
+        {/* Height & Weight */}
+        <BentoCard
+          className={bentoCardClass + " col-span-1"}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.8 }}
         >
-          <div className="bg-blue-50 rounded-lg p-2 text-gray-700 font-semibold">
-            Height
-            <div className="text-xl font-bold">{pokemon.height / 10} m</div>
+          <h2 className="text-lg font-semibold mb-2 text-blue-800">Size</h2>
+          <div className="grid grid-cols-2 gap-4 w-full">
+            <div className="bg-blue-50 rounded-lg p-2 text-gray-700 font-semibold flex flex-col items-center">
+              Height
+              <div className="text-xl font-bold">{pokemon.height / 10} m</div>
+            </div>
+            <div className="bg-blue-50 rounded-lg p-2 text-gray-700 font-semibold flex flex-col items-center">
+              Weight
+              <div className="text-xl font-bold">{pokemon.weight / 10} kg</div>
+            </div>
           </div>
-          <div className="bg-blue-50 rounded-lg p-2 text-gray-700 font-semibold">
-            Weight
-            <div className="text-xl font-bold">{pokemon.weight / 10} kg</div>
-          </div>
-        </motion.div>
+        </BentoCard>
 
-        <motion.div
-          className="mt-2 mb-6"
+        {/* Base Stats */}
+        <BentoCard
+          className={bentoCardClass + " col-span-2"}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.9 }}
         >
           <h2 className="text-lg font-semibold mb-2 text-blue-800">Base Stats</h2>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-2 w-full">
             {pokemon.stats.map((stat) => {
               const statColor = typeColors[mainType] || "#6366f1";
               const gradient = `linear-gradient(90deg, ${statColor}22 0%, ${statColor}99 100%)`;
 
-              // Simple emoji icons for each stat
               const statIcons = {
                 hp: "💚",
                 attack: "💥",
@@ -261,33 +315,38 @@ export default function PokemonDetails() {
               );
             })}
           </div>
-        </motion.div>
+        </BentoCard>
 
-        <motion.div
-          className="mt-2 mb-6"
+        {/* Moves */}
+        <BentoCard
+          className={bentoCardClass + " col-span-2"}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 1.0 }}
         >
           <h2 className="text-lg font-semibold mb-2 text-green-800">Moves</h2>
-          <div className="flex flex-wrap justify-center gap-2">
-            {pokemon.moves.slice(0, 8).map((move) => (
-              <motion.span
-                key={move.move.name}
-                className="bg-green-100 text-green-800 rounded-full px-3 py-1 text-xs capitalize font-semibold shadow"
-                whileHover={{ scale: 1.1 }}
-              >
-                {move.move.name}
-              </motion.span>
-            ))}
-            {pokemon.moves.length > 8 && (
-              <span className="text-gray-500 text-xs">and more...</span>
-            )}
+          <div
+            className="flex flex-wrap justify-center gap-2 max-h-48 overflow-y-auto"
+            style={{ scrollbarWidth: "thin" }}
+          >
+            {pokemon.moves
+              .slice() // create a copy
+              .sort((a, b) => a.move.name.localeCompare(b.move.name))
+              .map((move) => (
+                <motion.span
+                  key={move.move.name}
+                  className="bg-green-100 text-green-800 rounded-full px-3 py-1 text-xs capitalize font-semibold shadow"
+                  whileHover={{ scale: 1.1 }}
+                >
+                  {move.move.name}
+                </motion.span>
+              ))}
           </div>
-        </motion.div>
+        </BentoCard>
 
-        <motion.div
-          className="mt-2"
+        {/* Evolution Chain */}
+        <BentoCard
+          className={bentoCardClass + " col-span-2"}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 1.1 }}
@@ -320,8 +379,8 @@ export default function PokemonDetails() {
                 </motion.button>
               ))}
           </div>
-        </motion.div>
-      </motion.div>
+        </BentoCard>
+      </div>
     </motion.div>
   );
 }

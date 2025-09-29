@@ -156,7 +156,6 @@ export default function PokemonList() {
     >
       <div className="w-full flex flex-col items-center mb-8">
         <div className="bg-white/5 backdrop-blur-xs p-6 rounded-2xl shadow-md w-full max-w-6xl mb-6">
-          {/* Title */}
           <h1
             className="text-5xl font-bold mb-6 text-white text-center"
             style={{
@@ -169,11 +168,10 @@ export default function PokemonList() {
 
           {/* Search Bar and Filters */}
           <div className="flex flex-wrap gap-4 justify-center items-center">
-            {/* Search Bar */}
             <input
               type="text"
               placeholder="Search Pokémon..."
-              className="p-3 border-2 border-white-400 rounded-xl w-full max-w-md bg-white/10 backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-lg transition-all duration-200 shadow-md text-white placeholder-gray-300"
+              className="p-3 border-2 border-white-400 rounded-xl w-full max-w-md bg-white/10 backdrop-blur-xs focus:outline-none focus:ring-2 focus:ring-blue-400 text-lg transition-all duration-200 shadow-md text-white placeholder-gray-300"
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -226,7 +224,7 @@ export default function PokemonList() {
       </div>
 
 {/* Cards */}
-<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 w-full max-w-6xl bg-white/5 backdrop-blur-sm p-4 rounded-2xl shadow-md min-h-[600px] items-start justify-center">
+<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 w-full max-w-6xl bg-white/5 backdrop-blur-xs p-4 rounded-2xl shadow-md min-h-[600px] items-start justify-center">
         {visiblePokemons.map((pokemon) => {
           const details = pokemonDetails[pokemon.name];
 
