@@ -143,6 +143,13 @@ export default function PokemonList() {
 
   const visiblePokemons = filteredIndex.slice(0, visibleCount);
 
+  useEffect(() => {
+    // initial load fetch
+    if (filteredIndex.length > 0 && visibleCount === 0) {
+      setVisibleCount(20);
+    }
+  }, [filteredIndex, visibleCount]);
+
   return (
     <div
       className="min-h-screen w-screen flex flex-col items-center p-4"
