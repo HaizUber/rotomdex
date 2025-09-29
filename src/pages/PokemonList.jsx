@@ -154,7 +154,7 @@ export default function PokemonList() {
     <div
       className="min-h-screen w-screen flex flex-col items-center p-4"
       style={{
-        backgroundImage: "url('/src/assets/BgImages/pokelistbg.jpg')",
+        backgroundImage: "url('/src/assets/BgImages/listbg1.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
