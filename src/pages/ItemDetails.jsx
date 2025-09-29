@@ -115,7 +115,7 @@ export default function ItemDetails({ item, onClose }) {
                   {attributes.map((a) => (
                     <span
                       key={a}
-                      className="text-xs px-2 py-1 rounded-full bg-blue-50 text-blue-800 font-medium capitalize"
+                      className="text-xs px-2 py-1 rounded-full bg-blue-50 text-blue-800 font-medium capitalize border"
                     >
                       {a}
                     </span>

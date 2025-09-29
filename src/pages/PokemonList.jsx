@@ -267,7 +267,7 @@ export default function PokemonList() {
               style={{ backgroundColor: bgColor }}
               whileHover={{ scale: 1.07, boxShadow: "0px 8px 24px rgba(0,0,0,0.18)" }}
               whileTap={{ scale: 0.97 }}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 80 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ type: "spring", stiffness: 120, damping: 12 }}
             >
