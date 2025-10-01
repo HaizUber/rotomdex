@@ -2,6 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import { typeColors } from "./pokemonTypeColors";
 import { motion, useAnimation } from "framer-motion";
+import detailsbg from "/src/assets/BgImages/detailsbg.jpg";
 
 function BentoCard({ children, className, ...props }) {
   const ref = useRef(null);
@@ -123,9 +124,16 @@ export default function PokemonDetails() {
   if (!pokemon || !species) {
     return (
       <motion.div
-        className="min-h-screen w-screen bg-gradient-to-br from-blue-100 to-slate-200 flex flex-col items-center justify-center"
+        className="min-h-screen w-screen flex flex-col items-center p-6"
+        style={{
+          backgroundImage: `url(${detailsbg})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
       >
         <motion.p
           className="text-center text-xl text-blue-700 animate-pulse"
@@ -152,12 +160,18 @@ export default function PokemonDetails() {
   const bentoCardClass = "bento-card bg-white/90 shadow-lg rounded-2xl p-6 border border-blue-100 flex flex-col justify-center items-center";
 
   return (
-    <motion.div
-      className="min-h-screen w-screen bg-gradient-to-br from-blue-100 to-slate-200 flex flex-col items-center p-6"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-    >
+      <motion.div
+        className="min-h-screen w-screen flex flex-col items-center p-6"
+        style={{
+          backgroundImage: `url(${detailsbg})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
       <motion.button
         onClick={() => navigate(-1)}
         className="mb-6 px-6 py-2 bg-gradient-to-r from-blue-600 to-indigo-500 text-white rounded-full shadow-lg hover:scale-105 transition-transform"

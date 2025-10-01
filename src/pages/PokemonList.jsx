@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { typeColors } from "./pokemonTypeColors";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import listbg1 from "/src/assets/BgImages/listbg1.jpg";
 
 export default function PokemonList() {
   const [pokemonIndex, setPokemonIndex] = useState([]); 
@@ -154,7 +155,7 @@ export default function PokemonList() {
     <div
       className="min-h-screen w-screen flex flex-col items-center p-4"
       style={{
-        backgroundImage: "url('/src/assets/BgImages/pokelistbg.jpg')",
+        backgroundImage: `url(${listbg1})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
