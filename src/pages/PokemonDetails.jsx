@@ -3,9 +3,6 @@ import { useEffect, useState, useRef } from "react";
 import { typeColors } from "./pokemonTypeColors";
 import { motion, useAnimation } from "framer-motion";
 import detailsbg from "../assets/Images/BgImages/detailsbg.jpg";
-=======
-import detailsbg from "/src/assets/Images/BgImages/detailsbg.jpg";
->>>>>>> 450665498f5c0b56a7cfb7096d7f4cc58a711bee
 
 function BentoCard({ children, className, ...props }) {
   const ref = useRef(null);
