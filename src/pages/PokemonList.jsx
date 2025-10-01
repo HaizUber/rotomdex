@@ -179,7 +179,7 @@ export default function PokemonList() {
             <input
               type="text"
               placeholder="Search Pokémon..."
-              className="p-3 border-2 border-white-400 rounded-xl w-full max-w-md bg-white/10 backdrop-blur-xs focus:outline-none focus:ring-2 focus:ring-blue-400 text-lg transition-all duration-200 shadow-md text-white placeholder-gray-300"
+              className="p-3 border-2 border-white-400 rounded-xl w-full max-w-md bg-white/10 focus:outline-none focus:ring-2 focus:ring-blue-400 text-lg transition-all duration-200 shadow-md text-white placeholder-white"
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
