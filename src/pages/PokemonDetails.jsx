@@ -2,7 +2,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import { typeColors } from "./pokemonTypeColors";
 import { motion, useAnimation } from "framer-motion";
-<<<<<<< HEAD
 import detailsbg from "../assets/Images/BgImages/detailsbg.jpg";
 =======
 import detailsbg from "/src/assets/Images/BgImages/detailsbg.jpg";
