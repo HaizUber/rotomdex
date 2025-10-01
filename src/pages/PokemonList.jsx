@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import { typeColors } from "./pokemonTypeColors";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+<<<<<<< HEAD
 import listbg1 from "../assets/Images/BgImages/listbg1.jpg";
+=======
+import listbg1 from "/src/assets/Images/BgImages/listbg1.jpg";
+>>>>>>> 450665498f5c0b56a7cfb7096d7f4cc58a711bee
 
 export default function PokemonList() {
   const [pokemonIndex, setPokemonIndex] = useState([]); 
@@ -179,7 +183,7 @@ export default function PokemonList() {
             <input
               type="text"
               placeholder="Search Pokémon..."
-              className="p-3 border-2 border-white-400 rounded-xl w-full max-w-md bg-white/10 backdrop-blur-xs focus:outline-none focus:ring-2 focus:ring-blue-400 text-lg transition-all duration-200 shadow-md text-white placeholder-gray-300"
+              className="p-3 border-2 border-white-400 rounded-xl w-full max-w-md bg-white/10 focus:outline-none focus:ring-2 focus:ring-blue-400 text-lg transition-all duration-200 shadow-md text-white placeholder-white"
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);

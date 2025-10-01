@@ -2,7 +2,11 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import { typeColors } from "./pokemonTypeColors";
 import { motion, useAnimation } from "framer-motion";
+<<<<<<< HEAD
 import detailsbg from "../assets/Images/BgImages/detailsbg.jpg";
+=======
+import detailsbg from "/src/assets/Images/BgImages/detailsbg.jpg";
+>>>>>>> 450665498f5c0b56a7cfb7096d7f4cc58a711bee
 
 function BentoCard({ children, className, ...props }) {
   const ref = useRef(null);
@@ -58,6 +62,7 @@ export default function PokemonDetails() {
   const [pokemon, setPokemon] = useState(null);
   const [species, setSpecies] = useState(null);
   const [evolutions, setEvolutions] = useState([]);
+  const [moveSearch, setMoveSearch] = useState("");
 
   useEffect(() => {
     const fetchPokemon = async () => {
@@ -158,6 +163,13 @@ export default function PokemonDetails() {
 
   // Bento card style
   const bentoCardClass = "bento-card bg-white/90 shadow-lg rounded-2xl p-6 border border-blue-100 flex flex-col justify-center items-center";
+
+  const filteredMoves = pokemon.moves
+    .slice()
+    .sort((a, b) => a.move.name.localeCompare(b.move.name))
+    .filter((move) =>
+      move.move.name.toLowerCase().includes(moveSearch.toLowerCase())
+    );
 
   return (
       <motion.div
@@ -333,20 +345,28 @@ export default function PokemonDetails() {
 
         {/* Moves */}
         <BentoCard
-          className={bentoCardClass + " col-span-2"}
+          className={bentoCardClass + " col-span-2 relative"}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 1.0 }}
         >
-          <h2 className="text-lg font-semibold mb-2 text-green-800">Moves</h2>
+          <div className="flex justify-between items-center w-full mb-2">
+            <h2 className="text-lg font-semibold text-green-800">Moves</h2>
+            <input
+              type="text"
+              placeholder="Search move..."
+              value={moveSearch}
+              onChange={e => setMoveSearch(e.target.value)}
+              className="rounded-full px-4 py-1 bg-white/80 text-green-800 text-sm shadow focus:outline-none focus:ring-2 focus:ring-green-400 transition-all duration-200 placeholder-green-400 border border-green-200"
+              style={{ minWidth: 120 }}
+            />
+          </div>
           <div
             className="flex flex-wrap justify-center gap-2 max-h-48 overflow-y-auto"
             style={{ scrollbarWidth: "thin" }}
           >
-            {pokemon.moves
-              .slice() // create a copy
-              .sort((a, b) => a.move.name.localeCompare(b.move.name))
-              .map((move) => (
+            {filteredMoves.length > 0 ? (
+              filteredMoves.map((move) => (
                 <motion.span
                   key={move.move.name}
                   className="bg-green-100 text-green-800 rounded-full px-3 py-1 text-xs capitalize font-semibold shadow"
@@ -354,7 +374,10 @@ export default function PokemonDetails() {
                 >
                   {move.move.name}
                 </motion.span>
-              ))}
+              ))
+            ) : (
+              <span className="text-gray-400 italic">No moves found.</span>
+            )}
           </div>
         </BentoCard>
 
