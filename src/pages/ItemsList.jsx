@@ -113,7 +113,7 @@ export default function ItemsList() {
     >
       <div className="w-full flex flex-col items-center mb-8">
         <h1
-          className="pt-20text-4xl font-extrabold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-red-400 to-blue-600 drop-shadow-lg"
+          className="pt-10 text-5xl font-bold mb-6 text-white text-center"
           style={{ textShadow: "2px 2px 8px rgba(0,0,0,0.25)", letterSpacing: "2px" }}
         >
           Items

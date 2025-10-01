@@ -165,7 +165,7 @@ export default function PokemonList() {
       <div className="w-full flex flex-col items-center mb-8">
         <div className=" p-6 rounded-2xl  w-full max-w-6xl mb-6">
           <h1
-            className="text-5xl font-bold mb-6 text-white text-center"
+            className="pt-10 text-5xl font-bold mb-6 text-white text-center"
             style={{
               textShadow: "0px 4px 12px rgba(255, 255, 255, 0.6)",
               letterSpacing: "1px",

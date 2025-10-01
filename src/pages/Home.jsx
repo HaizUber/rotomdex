@@ -16,7 +16,7 @@ export default function Home() {
           minHeight: "100vh",
           width: "100%",
         }}
-        className="min-h-screen flex items-start justify-center pt-24">
+        className="min-h-screen flex items-start justify-center pt-80">
             <h1 className="text-4xl font-bold">Rotomdex</h1>
         </div>
     );

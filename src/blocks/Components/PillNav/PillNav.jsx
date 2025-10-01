@@ -240,9 +240,9 @@ const PillNav = ({
   };
 
   return (
-    <div className="pill-nav-container">
+    <div className={`pill-nav-container ${className}`} style={cssVars}>
       <nav
-        className={`pill-nav ${className}`}
+        className="pill-nav"
         aria-label="Primary"
         style={cssVars}
       >

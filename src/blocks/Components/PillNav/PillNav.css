@@ -3,16 +3,23 @@
 */
 
 .pill-nav-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  z-index: 20;
-  display: center;
+  position: fixed;
+  top: 1rem;
   left: 50%;
   transform: translateX(-50%);
+  z-index: 99;
+  display: flex;
   justify-content: center;
-  padding-bottom: 20px;
-  
+  width: auto;
+  pointer-events: auto;
+}
+
+.pill-nav-container.centered {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 20;
+  pointer-events: auto;
 }
 
 @media (max-width: 768px) {
