@@ -3,7 +3,6 @@ import Home from "./pages/Home";
 import PokemonList from "./pages/PokemonList";
 import PokemonDetails from "./pages/PokemonDetails";
 import ItemsList from "./pages/ItemsList";
-import Prism from './blocks/Backgrounds/Prism/Prism';
 import PillNav from "./blocks/Components/PillNav/PillNav";
 import logo from "./assets/Images/Logo/rotom2.png"; 
 
