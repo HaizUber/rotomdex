@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import bg from "../assets/Images/Backgrounds/itemlistbg2.jpg";
 import ItemDetails from "./ItemDetails";
@@ -19,6 +19,8 @@ export default function ItemsList() {
   useEffect(() => {
     setVisibleCount(24);
   }, [searchTerm]);
+
+
 
   // fetch the full items index once
   useEffect(() => {
@@ -92,12 +94,75 @@ export default function ItemsList() {
     }
   };
 
-  // apply search filter (case-insensitive)
-  const filteredIndex = (searchTerm || "").trim()
-    ? itemIndex.filter((it) => it.name.toLowerCase().includes(searchTerm.toLowerCase()))
-    : itemIndex;
+  // filters: categories (server-side filtering like PokemonList)
+  const [categoriesList, setCategoriesList] = useState([]); 
+  const [selectedCategories, setSelectedCategories] = useState("all");
+  const [filteredIndex, setFilteredIndex] = useState([]);
 
-  const visibleItems = filteredIndex.slice(0, visibleCount);
+  // fetch categories for the dropdown (name + url)
+  useEffect(() => {
+    let mounted = true;
+    const controller = new AbortController();
+    const load = async () => {
+      try {
+        const res = await fetch("https://pokeapi.co/api/v2/item-category?limit=200", { signal: controller.signal });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!mounted) return;
+        setCategoriesList(data.results || []);
+      } catch {
+        /* ignore */
+      }
+    };
+    load();
+    return () => {
+      mounted = false;
+      controller.abort();
+    };
+  }, []);
+
+  // apply filters: when itemIndex / selectedCategories / searchTerm change, update filteredIndex
+  useEffect(() => {
+    let mounted = true;
+    const controller = new AbortController();
+    const applyFilters = async () => {
+      let base = itemIndex || [];
+
+      // If a category is selected (not "all"), fetch that category's detail and intersect
+      if (selectedCategories && selectedCategories !== "all") {
+        try {
+          const res = await fetch(`https://pokeapi.co/api/v2/item-category/${selectedCategories}`, { signal: controller.signal });
+          if (!res.ok) {
+            if (mounted) setFilteredIndex([]);
+            return;
+          }
+          const data = await res.json();
+          const names = new Set((data.items || []).map((i) => i.name));
+          base = base.filter((it) => names.has(it.name));
+        } catch {
+          if (!mounted) return;
+          base = [];
+        }
+      }
+
+      // apply search client-side
+      const q = (searchTerm || "").trim().toLowerCase();
+      if (q) base = base.filter((it) => it.name.toLowerCase().includes(q));
+
+      if (mounted) {
+        setFilteredIndex(base);
+        setVisibleCount(24);
+      }
+    };
+
+    applyFilters();
+    return () => {
+      mounted = false;
+      controller.abort();
+    };
+  }, [itemIndex, selectedCategories, searchTerm]);
+
+  const visibleItems = (filteredIndex || []).slice(0, visibleCount);
 
   return (
     <div
@@ -118,14 +183,29 @@ export default function ItemsList() {
         >
           Items
         </h1>
-        <div className="w-full max-w-6xl mb-6">
+        <div className="flex flex-col sm:flex-row gap-3 items-center w-full justify-center">
           <input
             type="search"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search items..."
-            className="p-3 border-2 border-white-400 rounded-xl w-full max-w-md bg-white/5 backdrop-blur-xs focus:outline-none focus:ring-2 focus:ring-blue-400 text-lg transition-all duration-200 shadow-md text-white placeholder-gray-600"
+            className="p-3 border-2 border-white-400 rounded-xl w-full max-w-md bg-white/5 backdrop-blur-xs focus:outline-none focus:ring-2 focus:ring-blue-400 text-lg transition-all duration-200 shadow-md text-black placeholder-gray-600"
           />
+
+          <select
+            value={selectedCategories}
+            onChange={(e) => setSelectedCategories(e.target.value)}
+            className="p-3 border-2 border-white-400 rounded-xl bg-white/10 backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-lg shadow-md text-black placeholder-gray-300">
+              <option value="all">All Categories</option>
+              {categoriesList.map((cat) => {
+                const label = cat.name ? cat.name.charAt(0).toUpperCase() + cat.name.slice(1) : cat.name;
+                return (
+                  <option key={cat.name} value={cat.name}>
+                    {label}
+                  </option>
+                );
+              })}
+          </select>
         </div>
       </div>
 
