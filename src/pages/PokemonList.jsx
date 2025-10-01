@@ -162,7 +162,7 @@ export default function PokemonList() {
       }}
     >
       <div className="w-full flex flex-col items-center mb-8">
-        <div className="bg-white/5 backdrop-blur-xs p-6 rounded-2xl shadow-md w-full max-w-6xl mb-6">
+        <div className=" p-6 rounded-2xl  w-full max-w-6xl mb-6">
           <h1
             className="text-5xl font-bold mb-6 text-white text-center"
             style={{
