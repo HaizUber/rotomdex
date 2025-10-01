@@ -17,7 +17,7 @@ export default function Home() {
           width: "100%",
         }}
         className="min-h-screen flex items-start justify-center pt-80">
-            <h1 className="text-4xl font-bold">Rotomdex</h1>
+            <h1 className="text-4xl font-bold">RotomDex</h1>
         </div>
     );
 }

@@ -162,7 +162,7 @@ export default function PokemonList() {
         backgroundAttachment: "fixed",
       }}
     >
-      <div className="w-full flex flex-col items-center mb-8">
+      <div className=" pt-10 w-full flex flex-col items-center mb-8">
         <h1
           className="text-5xl font-bold mb-6 text-white text-center"
         >
@@ -175,11 +175,7 @@ export default function PokemonList() {
         {/* Sidebar Filters */}
         <aside className="bg-white/30 backdrop-blur-md border border-white/30 rounded-2xl shadow-md p-6 w-full max-w-xs flex flex-col gap-6 h-fit">
           <h1
-<<<<<<< HEAD
             className="pt-10 text-5xl font-bold mb-6 text-white text-center"
-=======
-            className="text-3xl font-bold mb-6 text-blue-700 text-center"
->>>>>>> fecc823237b0063324d0c48e8ef3e6b001d9af81
             style={{
               textShadow: "0px 4px 12px rgba(0,0,0,0.10)",
               letterSpacing: "1px",

@@ -30,10 +30,10 @@
 }
 
 .pill-nav {
-  --nav-h: 42px;
+  --nav-h: 56px;
   --logo: 36px;
   --pill-pad-x: 18px;
-  --pill-gap: 3px;
+  --pill-gap: 7px;
   width: max-content;
   display: flex;
   align-items: center;
