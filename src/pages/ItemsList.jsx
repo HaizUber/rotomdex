@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import bg from "../assets/Images/BgImages/itemlistbg2.jpg";
+import bg from "../assets/Images/Backgrounds/itemlistbg2.jpg";
 import ItemDetails from "./ItemDetails";
 
 export default function ItemsList() {
