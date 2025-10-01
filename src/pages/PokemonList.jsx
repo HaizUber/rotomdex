@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { typeColors } from "./pokemonTypeColors";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import listbg1 from "/src/assets/BgImages/listbg1.jpg";
+import listbg1 from "../assets/Images/BgImages/listbg1.jpg";
 
 export default function PokemonList() {
   const [pokemonIndex, setPokemonIndex] = useState([]); 
