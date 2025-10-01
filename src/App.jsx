@@ -13,7 +13,7 @@ function App() {
       <div>
         <PillNav
         logo={logo}
-        logoAlt="Company Logo"
+        logoAlt="RotomDex"
         items={[
           { label: 'Home', href: '/' },
           { label: 'Pokemons', href: '/pokemons' },
