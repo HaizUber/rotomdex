@@ -2,7 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import { typeColors } from "./pokemonTypeColors";
 import { motion, useAnimation } from "framer-motion";
-import detailsbg from "../assets/Images/BgImages/detailsbg.jpg";
+import detailsbg from "../assets/Images/Backgrounds/detailsbg.jpg";
 
 function BentoCard({ children, className, ...props }) {
   const ref = useRef(null);

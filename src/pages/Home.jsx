@@ -1,4 +1,4 @@
-import bgImage from "../assets/Images/BgImages/BgImage3.png";
+import bgImage from "../assets/Images/Backgrounds/Bgimage3.png";
 
 
 export default function Home() {
