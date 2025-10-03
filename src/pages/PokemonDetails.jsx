@@ -167,6 +167,32 @@ export default function PokemonDetails() {
       move.move.name.toLowerCase().includes(moveSearch.toLowerCase())
     );
 
+  const typeEffectiveness = {
+    normal:    { strong: [], weak: ["fighting"] },
+    fire:      { strong: ["grass", "ice", "bug", "steel"], weak: ["water", "ground", "rock"] },
+    water:     { strong: ["fire", "ground", "rock"], weak: ["electric", "grass"] },
+    electric:  { strong: ["water", "flying"], weak: ["ground"] },
+    grass:     { strong: ["water", "ground", "rock"], weak: ["fire", "ice", "poison", "flying", "bug"] },
+    ice:       { strong: ["grass", "ground", "flying", "dragon"], weak: ["fire", "fighting", "rock", "steel"] },
+    fighting:  { strong: ["normal", "ice", "rock", "dark", "steel"], weak: ["flying", "psychic", "fairy"] },
+    poison:    { strong: ["grass", "fairy"], weak: ["ground", "psychic"] },
+    ground:    { strong: ["fire", "electric", "poison", "rock", "steel"], weak: ["water", "grass", "ice"] },
+    flying:    { strong: ["grass", "fighting", "bug"], weak: ["electric", "ice", "rock"] },
+    psychic:   { strong: ["fighting", "poison"], weak: ["bug", "ghost", "dark"] },
+    bug:       { strong: ["grass", "psychic", "dark"], weak: ["fire", "flying", "rock"] },
+    rock:      { strong: ["fire", "ice", "flying", "bug"], weak: ["water", "grass", "fighting", "ground", "steel"] },
+    ghost:     { strong: ["psychic", "ghost"], weak: ["ghost", "dark"] },
+    dragon:    { strong: ["dragon"], weak: ["ice", "dragon", "fairy"] },
+    dark:      { strong: ["psychic", "ghost"], weak: ["fighting", "bug", "fairy"] },
+    steel:     { strong: ["ice", "rock", "fairy"], weak: ["fire", "fighting", "ground"] },
+    fairy:     { strong: ["fighting", "dragon", "dark"], weak: ["poison", "steel"] },
+  };
+
+  // For dual types, combine all strong/weak types and remove duplicates
+  const allTypes = pokemon.types.map(t => t.type.name);
+  const strongAgainst = [...new Set(allTypes.flatMap(type => typeEffectiveness[type]?.strong || []))];
+  const weakAgainst = [...new Set(allTypes.flatMap(type => typeEffectiveness[type]?.weak || []))];
+
   return (
       <motion.div
         className="min-h-screen w-screen flex flex-col items-center p-6"
@@ -339,6 +365,66 @@ export default function PokemonDetails() {
           </div>
         </BentoCard>
 
+        {/* Type Effectiveness */}
+        <BentoCard
+          className={bentoCardClass + " col-span-2"}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 1.0 }}
+        >
+          <h2 className="text-lg font-semibold mb-2 text-indigo-800">Type Effectiveness</h2>
+          <div className="flex flex-col md:flex-row gap-4 w-full justify-center items-start">
+            {/* Strong Against */}
+            <div className="flex-1">
+              <div className="font-semibold text-green-700 mb-1">Strong Against:</div>
+              <div className="flex flex-wrap gap-2">
+                {strongAgainst.length > 0 ? (
+                  strongAgainst.map(type => (
+                    <span
+                      key={type}
+                      className="inline-block rounded-full px-3 py-1 text-xs font-bold"
+                      style={{
+                        backgroundColor: typeColors[type] || "#6366f1",
+                        color: "#fff",
+                        border: "1px solid #fff",
+                        textShadow: "0 1px 4px #0002",
+                      }}
+                    >
+                      {type}
+                    </span>
+                  ))
+                ) : (
+                  <span className="text-gray-500 text-xs">None</span>
+                )}
+              </div>
+            </div>
+            {/* Weak Against */}
+            <div className="flex-1">
+              <div className="font-semibold text-red-700 mb-1">Weak Against:</div>
+              <div className="flex flex-wrap gap-2">
+                {weakAgainst.length > 0 ? (
+                  weakAgainst.map(type => (
+                    <span
+                      key={type}
+                      className="inline-block rounded-full px-3 py-1 text-xs font-bold"
+                      style={{
+                        backgroundColor: typeColors[type] || "#6366f1",
+                        color: "#fff",
+                        border: "1px solid #fff",
+                        textShadow: "0 1px 4px #0002",
+                      }}
+                    >
+                      {type}
+                    </span>
+                  ))
+                ) : (
+                  <span className="text-gray-500 text-xs">None</span>
+                )}
+              </div>
+            </div>
+          </div>
+        </BentoCard>
+
         {/* Moves */}
         <BentoCard
           className={bentoCardClass + " col-span-2 relative"}
@@ -385,32 +471,49 @@ export default function PokemonDetails() {
           transition={{ duration: 0.5, delay: 1.1 }}
         >
           <h2 className="text-lg font-semibold mb-2 text-indigo-800">Evolution Chain</h2>
-          <div className="flex flex-row items-center justify-center gap-6 flex-wrap">
-            {evolutions
-              .filter(evo => evo.name !== pokemon.name)
-              .map((evo) => (
-                <motion.button
+          <div>
+            <h2 className="sr-only">Steps</h2>
+            <ol className="grid grid-cols-1 divide-x divide-gray-100 overflow-hidden rounded-lg border border-gray-100 text-sm text-gray-500 sm:grid-cols-3">
+              {evolutions.map((evo, idx) => (
+                <li
                   key={evo.name}
-                  onClick={() => navigate(`/pokemon/${evo.name}`)}
-                  className="inline-flex items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-slate-100 shadow-md border border-blue-200 p-0 m-0 focus:outline-none transition-transform duration-150"
-                  title={`View ${evo.name}`}
-                  style={{
-                    width: "8rem",
-                    height: "4rem",
-                    overflow: "hidden",
-                    background: "linear-gradient(to bottom right, #dbeafe, #f1f5f9)",
-                    border: "1px solid #bfdbfe"
-                  }}
-                  whileHover={{ scale: 1.13, boxShadow: "0 0 16px #6366f1" }}
-                  whileTap={{ scale: 0.95 }}
+                  className={`flex flex-col items-center justify-center gap-2 p-4 relative bg-white`}
                 >
+                  {idx > 0 && (
+                    <span
+                      className="absolute top-1/2 -left-2 hidden size-4 -translate-y-1/2 rotate-45 border border-gray-100 sm:block ltr:border-s-0 ltr:border-b-0 ltr:bg-white rtl:border-e-0 rtl:border-t-0 rtl:bg-white"
+                    ></span>
+                  )}
+                  {idx < evolutions.length - 1 && (
+                    <span
+                      className="absolute top-1/2 -right-2 hidden size-4 -translate-y-1/2 rotate-45 border border-gray-100 sm:block ltr:border-s-0 ltr:border-b-0 ltr:bg-white rtl:border-e-0 rtl:border-t-0 rtl:bg-white"
+                    ></span>
+                  )}
+
                   <img
                     src={evo.sprite}
                     alt={evo.name}
-                    className="w-16 h-16 rounded-full"
+                    className="w-16 h-16 rounded-full border-2 border-blue-200 bg-blue-50 cursor-pointer hover:scale-110 transition-transform"
+                    onClick={() => navigate(`/pokemon/${evo.name}`)}
+                    title={`Go to ${evo.name}`}
                   />
-                </motion.button>
+                  <p className="leading-none text-center">
+                    <strong className="block font-medium capitalize text-gray-800">{evo.name}</strong>
+                    {idx > 0 && (
+                      <small className="mt-1 block text-xs text-blue-600">
+                        {evo.min_level
+                          ? `Evolves at Lv. ${evo.min_level}`
+                          : evo.trigger === "use-item" && evo.item
+                          ? `Use ${evo.item.name.replace(/-/g, " ")}`
+                          : evo.trigger
+                          ? `Trigger: ${evo.trigger.replace(/-/g, " ")}`
+                          : ""}
+                      </small>
+                    )}
+                  </p>
+                </li>
               ))}
+            </ol>
           </div>
         </BentoCard>
       </div>
